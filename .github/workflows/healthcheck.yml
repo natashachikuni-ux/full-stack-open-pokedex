@@ -2,9 +2,7 @@ name: Periodic Health Check
 
 on:
   schedule:
-    # This "cron" string tells GitHub to run this job every day at midnight UTC
     - cron: '0 0 * * *'
-  # This lets us manually trigger it from the GitHub website whenever we want to test it
   workflow_dispatch:
 
 jobs:
@@ -12,9 +10,11 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Check the live URL health
-        uses: jasonatallah/request-action@v2
-        with:
-          url: 'https://full-stack-open-pokedex-6ath.onrender.com/health'
-          method: 'GET'
-          # We expect a successful 200 OK HTTP response status
-          expected_statuses: '200'
+        # We will use the standard command-line curl tool to ping the site natively
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://full-stack-open-pokedex-6ath.onrender.com/health)
+          if [ "$response" != "200" ]; then
+            echo "Health check failed with status $response"
+            exit 1
+          fi
+          echo "Health check passed with status 200!"
