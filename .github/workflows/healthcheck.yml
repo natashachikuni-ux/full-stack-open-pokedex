@@ -10,9 +10,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Check the live URL health
-        # We will use the standard command-line curl tool to ping the site natively
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://full-stack-open-pokedex-6ath.onrender.com/health)
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://full-stack-open-pokedex-6ath.onrender.com/)
           if [ "$response" != "200" ]; then
             echo "Health check failed with status $response"
             exit 1
